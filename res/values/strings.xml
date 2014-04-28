@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="app_name">ArcaneluxLibrary</string>
+    <!-- AD Info -->
+	<string name="id_adlibr">ArcaneluxLibrary_Adlibr</string>
+	<string name="id_adam">ArcaneluxLibrary_Adam</string>
+	<string name="id_cauly">ArcaneluxLibrary_Cauly</string>
+	<string name="id_inmobi">ArcaneluxLibrary_Inmobi</string>
+	
+	<!-- Flurry -->
+	<string name="id_flurry">ArcaneluxLibrary_Flurry</string>
+
+</resources>

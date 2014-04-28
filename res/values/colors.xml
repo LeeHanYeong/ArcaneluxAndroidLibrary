@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <color name="backgroundColor">#FFF9FAFA</color>
+    
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="verydarkgray">#FF333333</color>
+    <color name="darkgray">#FF666666</color>
+    <color name="gray">#FF999999</color>
+    <color name="lightgray">#FFBBBBBB</color>
+    
+    <color name="theme">#1790A6</color>
+    
+    
+    <!-- ActionBar -->
+    <color name="color_transparent">#00FFFFFF</color>
+    <color name="color_actionbar">#FF2F848A</color>
+    <color name="color_actionbar_tab">#FF225154</color>
+    <color name="color_actionbar_tab_indicator">#FF6fbec3</color>
+    
+    <!-- BookList -->
+    <color name="booklist_background">#FFacc4c6</color>
+    <color name="booklist_checkbox_background">#AA225154</color>
+    
+    <!-- Oneline -->
+    <color name="oneline_comment">#1790a6</color>
+    
+</resources>
