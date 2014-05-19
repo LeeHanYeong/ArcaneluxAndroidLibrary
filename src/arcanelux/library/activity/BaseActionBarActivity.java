@@ -6,19 +6,16 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.WindowManager;
 import android.widget.TextView;
 import arcanelux.library.R;
-import arcanelux.library.R.string;
+import arcanelux.library.common.BasePref;
 
 import com.flurry.android.FlurryAgent;
-import com.mocoplex.adlib.AdlibAdViewContainer;
-import com.mocoplex.adlib.AdlibConfig;
-import com.mocoplex.adlib.AdlibManager;
-import com.mocoplex.adlib.AdlibManager.AdlibVersionCheckingListener;
 
 /**
  * onCreate - Typeface, mContext, idFlurry, mActionBar 설정
@@ -33,6 +30,8 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	protected Context mContext;
 	protected boolean D = false;
 	protected String packageName;
+	protected int displayWidth, displayHeight;
+	
 	protected static Typeface mTypeface;
 	protected String fontFileName = "NanumBarunGothic.mp3";
 	protected String idFlurry;
@@ -40,11 +39,18 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		mContext = this;
+		setDisplaySize();
+		setDeviceId();
 		if (BaseActionBarActivity.mTypeface == null)
 			BaseActionBarActivity.mTypeface = Typeface.createFromAsset(getAssets(), fontFileName);
-		mContext = this;
 		idFlurry = getResources().getString(R.string.id_flurry);
 		mActionBar = this.getSupportActionBar();
+		packageName = getPackageName();
+		
+		if(D){
+			Log.d(TAG, "PackageName : " + packageName);
+		}
 	}
 
 	@Override
@@ -78,5 +84,17 @@ public class BaseActionBarActivity extends ActionBarActivity {
 				setGlobalFont((ViewGroup)child);
 			}
 		}
+	}
+	
+	private void setDisplaySize(){
+		/** 화면크기 **/
+		Display display = ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		displayWidth = display.getWidth();
+		displayHeight = display.getHeight();
+		BasePref.setDisplaySize(mContext, displayWidth, displayHeight);
+	}
+	
+	private void setDeviceId(){
+		BasePref.setDeviceId(mContext);
 	}
 }
