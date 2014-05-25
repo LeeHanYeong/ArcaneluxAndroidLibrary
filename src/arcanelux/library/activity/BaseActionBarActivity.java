@@ -32,6 +32,8 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	protected String packageName;
 	protected int displayWidth, displayHeight;
 	
+	/** 커스텀 폰트를 사용하려면, BaseActionBarActivity를 상속받은 클래스에서 onCreate의 super()함수를 호출하기 전에 setCustomFont를 true로 바꾸어주어야 함 */
+	protected boolean setCustomFont = false;
 	protected static Typeface mTypeface;
 	protected String fontFileName = "NanumBarunGothic.mp3";
 	protected String idFlurry;
@@ -42,7 +44,7 @@ public class BaseActionBarActivity extends ActionBarActivity {
 		mContext = this;
 		setDisplaySize();
 		setDeviceId();
-		if (BaseActionBarActivity.mTypeface == null)
+		if (BaseActionBarActivity.mTypeface == null && setCustomFont)
 			BaseActionBarActivity.mTypeface = Typeface.createFromAsset(getAssets(), fontFileName);
 		idFlurry = getResources().getString(R.string.id_flurry);
 		mActionBar = this.getSupportActionBar();
