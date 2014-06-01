@@ -4,14 +4,9 @@ import org.apache.http.util.EncodingUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import arcanelux.library.R;
 
 public class BaseWebViewActivity extends BaseActionBarActivity {

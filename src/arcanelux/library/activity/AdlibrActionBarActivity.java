@@ -53,12 +53,12 @@ public class AdlibrActionBarActivity extends BaseActionBarActivity {
 	@Override
 	public void setContentView(int layoutResID) {
 		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-		setGlobalFont(root);
+//		setGlobalFont(root);
 
 		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// setContentView에 전달된 layout으로 view생성
-		View view = inflater.inflate(layoutResID, null);
-		setGlobalFont((ViewGroup)view);
+		View view = inflateWithCustomFont(inflater, layoutResID);
+
 
 		// 전체화면 구성하는 LinearLayout llRootView 생성
 		LinearLayout llRootView = new LinearLayout(mContext);

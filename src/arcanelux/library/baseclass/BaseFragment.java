@@ -1,5 +1,7 @@
 package arcanelux.library.baseclass;
 
+import com.androidquery.AQuery;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -13,17 +15,20 @@ import android.widget.TextView;
 public class BaseFragment extends Fragment{
 	protected final String TAG = this.getClass().getName();
 	protected Context mContext;
+	protected AQuery aq;
 	protected String mFontFileName = "NanumBarunGothic.mp3";
 	protected boolean hasCustomFontFile = false;
 	private static Typeface mTypeface;
 
-	public BaseFragment() {
-		super();
+	public BaseFragment(Context context) {
+		mContext = context;
+		aq = new AQuery(mContext);
 	}
 	
 	/** CustomFont를 적용할 때 사용할 생성자 **/
-	public BaseFragment(String fontFileName){
-		super();
+	public BaseFragment(Context context, String fontFileName){
+		mContext = context;
+		aq = new AQuery(mContext);
 		hasCustomFontFile = true;
 		mFontFileName = fontFileName;
 	}
@@ -36,6 +41,11 @@ public class BaseFragment extends Fragment{
 
 	/** Inflate시 CustomFont를 적용한 View를 리턴해주는 함수 **/ 
 	protected View inflateWithCustomFont(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState, int layoutRes){
+		return inflateWithCustomFont(inflater, container, layoutRes);
+	}
+	
+	/** Inflate시 CustomFont를 적용한 View를 리턴해주는 함수 **/ 
+	protected View inflateWithCustomFont(LayoutInflater inflater, ViewGroup container, int layoutRes){
 		Context context = container.getContext();
 		mContext = context;
 		View view = inflater.inflate(layoutRes, container, false);
