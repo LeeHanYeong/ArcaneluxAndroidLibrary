@@ -30,7 +30,7 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	protected final String TAG = this.getClass().getSimpleName();
 	protected ActionBar mActionBar;
 	protected Context mContext;
-	protected boolean D = false;
+	protected boolean D = true;
 	protected String packageName;
 	protected int displayWidth, displayHeight;
 	
@@ -136,6 +136,9 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	}
 
 	/** View와 하위 Child들에 커스텀 폰트 적용하는 함수, static으로 저장된 하나의 Typeface를 사용할 때 **/
+	protected void setGlobalFont(TextView view) {
+		view.setTypeface(mTypeface);
+	}
 	protected void setGlobalFont(ViewGroup root) {
 		for (int i = 0; i < root.getChildCount(); i++) {
 			View child = root.getChildAt(i);
@@ -149,6 +152,9 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	}
 
 	/** View와 하위 Child들에 Typeface 받아 적용하는 함수. 한 개 이상의 Typeface를 사용할 때, 동적생성해서 사용 **/
+	protected void setGlobalFont(TextView view, Typeface typeface) {
+		view.setTypeface(typeface);
+	}
 	protected void setGlobalFont(ViewGroup root, Typeface typeface) {
 		for (int i = 0; i < root.getChildCount(); i++) {
 			View child = root.getChildAt(i);

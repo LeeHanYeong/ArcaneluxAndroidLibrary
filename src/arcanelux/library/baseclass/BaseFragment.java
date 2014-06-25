@@ -59,7 +59,11 @@ public class BaseFragment extends Fragment{
 		return view;
 	}
 
-	private void setGlobalFont(ViewGroup root) {
+	/** View와 하위 Child들에 커스텀 폰트 적용하는 함수, static으로 저장된 하나의 Typeface를 사용할 때 **/
+	protected void setGlobalFont(TextView view) {
+		view.setTypeface(mTypeface);
+	}
+	protected void setGlobalFont(ViewGroup root) {
 		for (int i = 0; i < root.getChildCount(); i++) {
 			View child = root.getChildAt(i);
 			if (child instanceof TextView){
@@ -67,6 +71,22 @@ public class BaseFragment extends Fragment{
 			}
 			else if (child instanceof ViewGroup){
 				setGlobalFont((ViewGroup)child);
+			}
+		}
+	}
+
+	/** View와 하위 Child들에 Typeface 받아 적용하는 함수. 한 개 이상의 Typeface를 사용할 때, 동적생성해서 사용 **/
+	protected void setGlobalFont(TextView view, Typeface typeface) {
+		view.setTypeface(typeface);
+	}
+	protected void setGlobalFont(ViewGroup root, Typeface typeface) {
+		for (int i = 0; i < root.getChildCount(); i++) {
+			View child = root.getChildAt(i);
+			if (child instanceof TextView){
+				((TextView)child).setTypeface(typeface);
+			}
+			else if (child instanceof ViewGroup){
+				setGlobalFont((ViewGroup)child, typeface);
 			}
 		}
 	}

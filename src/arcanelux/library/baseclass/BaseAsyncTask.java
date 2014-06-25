@@ -117,6 +117,10 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 
 	
 	
+	public static String postRequest(String strUrl){
+		HashMap<String, String> valuePair = new HashMap<String, String>();
+		return postRequestHttpClient(strUrl, valuePair);
+	}
 	public static String postRequest(String strUrl, HashMap<String, String> valuePair){
 		return postRequestHttpClient(strUrl, valuePair);
 	}
@@ -124,7 +128,8 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 		return postRequestFileHttpClient(strUrl, valuePair, filePair);
 	}
 
-	public static String postRequestHttpUrlConnection(String strUrl, HashMap<String, String> valuePair){
+	/** HttpURLConnection을 사용하는 방법. 쓰지 않는다 **/
+	private static String postRequestHttpUrlConnection(String strUrl, HashMap<String, String> valuePair){
 		URL url;
 		try {
 			url = new URL(strUrl);
@@ -185,17 +190,9 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 			e.printStackTrace();
 			return "";
 		}
-
-
-
-
 	}
 
-
-
-
-
-
+	/** HttpClient를 사용하는 방법 **/
 	public static String postRequestHttpClient(String url, HashMap<String, String> valuePair){
 		InputStream is = null;
 		String result = "";
@@ -251,6 +248,7 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 		return result;
 	}
 
+	/** HttpClient를 쓰며 파일전송도 포함 **/
 	public static String postRequestFileHttpClient(String url, HashMap<String, String> valuePair, HashMap<String, String> filePair){
 		InputStream is = null;
 		String result = "";
@@ -323,6 +321,7 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 		return result;
 	}
 
+	/** Get방식 요청 **/
 	public static String getRequest(String url, HashMap<String, String> valuePair){
 		InputStream is = null;
 		String result = "";
@@ -437,14 +436,14 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 		}
 	}
 
-	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+	private final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
 		@Override
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
 		}
 	};
 
-	public static DefaultHttpClient getNewHttpClient() {
+	private static DefaultHttpClient getNewHttpClient() {
 		try {
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			trustStore.load(null, null);

@@ -40,6 +40,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.net.Uri;
@@ -51,6 +52,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -599,6 +601,10 @@ public class ArcaneluxFunction {
 		}else{
 			return false;
 		}
+	}
+	
+	public static void setTypeface(Context context, TextView tv, String fontFileName){
+		tv.setTypeface(Typeface.createFromAsset(context.getAssets(), fontFileName));
 	}
 
 }

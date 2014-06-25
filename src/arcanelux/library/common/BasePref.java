@@ -1,5 +1,8 @@
 package arcanelux.library.common;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
@@ -22,13 +25,13 @@ public class BasePref {
 		int value = pref.getInt("width", 0);
 		return value;
 	}
-	
+
 	// Display Width 불러오기
-		public static int getDisplayHeight(Context context){
-			SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
-			int value = pref.getInt("height", 0);
-			return value;
-		}
+	public static int getDisplayHeight(Context context){
+		SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
+		int value = pref.getInt("height", 0);
+		return value;
+	}
 
 	// Density 저장
 	public static void setDensity(Context context){
@@ -45,7 +48,7 @@ public class BasePref {
 		float density = pref.getFloat("density", 0.0f);
 		return density;
 	}
-	
+
 	// Device ID 저장
 	public static void setDeviceId(Context context){
 		SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
@@ -62,16 +65,51 @@ public class BasePref {
 		String deviceId = pref.getString("deviceId", "");
 		return deviceId;
 	}
-	
-	
+
+
 	// Device ID 얻기
 	private static String getCurrentDeviceId(Context context){
 		String deviceId="";
-			
+
 		TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		deviceId = tManager.getDeviceId();
-		
+
 		return deviceId;
 	}
 
+	// JsonObject String 형태로 저장
+	public static void setJsonObject(Context context, String name, JSONObject jsonObject){
+		SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		String strJsonObject = jsonObject.toString();
+		editor.putString(name, strJsonObject);
+		editor.commit();
+	}
+
+	// JsonObjectString 을 저장
+	public static void setJsonObjectString(Context context, String name, String str){
+		SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putString(name, str);
+		editor.commit();
+	}
+
+	// String 형태로 저장되어있는 JsonObject를 JsonObject객체로 생성하여 리턴
+	public static JSONObject getJsonObject(Context context, String name){
+		SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
+		String strJsonObject = pref.getString(name, "");
+		try {
+			return new JSONObject(strJsonObject);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	// String 형태로 저장되어있는 JsonObject를 String그대로 리턴
+	public static String getJsonObjectString(Context context, String name){
+		SharedPreferences pref = context.getSharedPreferences("savedValue", Context.MODE_PRIVATE);
+		String strJsonObject = pref.getString(name, "");
+		return strJsonObject;
+	}
 }
