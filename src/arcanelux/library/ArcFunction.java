@@ -56,7 +56,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class ArcaneluxFunction {
+public class ArcFunction {
 	private static final String TAG = "lhy_Function";
 	public static final int REQ_UPDATE = 1009;
 
@@ -342,7 +342,7 @@ public class ArcaneluxFunction {
 		}
 		Log.d(TAG, "--SupportedPictureSizeList End--");
 		// 원하는 최적화 사이즈를 1280x720 으로 설정
-		Camera.Size size = ArcaneluxFunction.getOptimalPictureSize(parameters.getSupportedPictureSizes(), optWidth, optHeight);
+		Camera.Size size = ArcFunction.getOptimalPictureSize(parameters.getSupportedPictureSizes(), optWidth, optHeight);
 		Log.d(TAG, "Selected Optimal Size : (" + size.width + ", " + size.height + ")");
 		parameters.setPreviewSize(size.width,  size.height);
 		parameters.setPictureSize(size.width,  size.height);
