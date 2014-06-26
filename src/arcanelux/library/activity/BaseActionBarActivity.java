@@ -48,7 +48,7 @@ public class BaseActionBarActivity extends ActionBarActivity {
 		mContext = this;
 		mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		setDisplaySize();
-		setDeviceId();
+//		setDeviceId();
 		idFlurry = getResources().getString(R.string.id_flurry);
 		mActionBar = this.getSupportActionBar();
 		packageName = getPackageName();
