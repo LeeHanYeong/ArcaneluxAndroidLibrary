@@ -20,15 +20,19 @@ public class BaseFragment extends Fragment{
 	protected boolean hasCustomFontFile = false;
 	private static Typeface mTypeface;
 
+	public BaseFragment(){
+		
+	}
+	
 	public BaseFragment(Context context) {
 		mContext = context;
-		aq = new AQuery(mContext);
+		aq = new AQuery(context);
 	}
 	
 	/** CustomFont를 적용할 때 사용할 생성자 **/
 	public BaseFragment(Context context, String fontFileName){
 		mContext = context;
-		aq = new AQuery(mContext);
+		aq = new AQuery(context);
 		hasCustomFontFile = true;
 		mFontFileName = fontFileName;
 	}
@@ -47,7 +51,6 @@ public class BaseFragment extends Fragment{
 	/** Inflate시 CustomFont를 적용한 View를 리턴해주는 함수 **/ 
 	protected View inflateWithCustomFont(LayoutInflater inflater, ViewGroup container, int layoutRes){
 		Context context = container.getContext();
-		mContext = context;
 		View view = inflater.inflate(layoutRes, container, false);
 		if(!hasCustomFontFile){
 			Log.e(TAG, "FontFileName Missing!");

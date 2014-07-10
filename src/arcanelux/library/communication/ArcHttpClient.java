@@ -22,6 +22,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -37,6 +38,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import arcanelux.library.baseclass.BaseAsyncTask;
@@ -73,6 +75,10 @@ public class ArcHttpClient {
 
 	// Result
 	private boolean resultSuccess = true;
+	
+	// Custom ProgressDialog
+	private ProgressDialog mCustomProgressDialog;
+	private boolean useCustomProgressDialog;
 
 
 	/**
@@ -112,7 +118,14 @@ public class ArcHttpClient {
 			
 		}
 	}
+	
+	// Custom ProgressDialog 설정
+	public void setCustomProgressDialog(ProgressDialog customProgressDialog){
+		mCustomProgressDialog = customProgressDialog;
+		useCustomProgressDialog = true;
+	}
 
+	// HTTP 통신 설정
 	public void setDebugMode(boolean value){
 		D = value;
 	}
@@ -155,8 +168,15 @@ public class ArcHttpClient {
 	public boolean isResultSuccess(){
 		return resultSuccess;
 	}
+	
+	// execute부분 설정 (BaseAsyncTask의 Old, New Version추가)
 	public void execute(Context context, String title, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
-		new ExecuteTask(context, title, showDialog, listener).execute();
+		executeBase(context, "잠시만 기다려주세요...", title, showDialog, listener);
+	}
+	private void executeBase(Context context, String title, String message, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
+		ExecuteTask task = new ExecuteTask(context, title, message, showDialog, listener);
+		if(useCustomProgressDialog) task.setCustomProgressDialog(mCustomProgressDialog);
+		task.execute();
 	}
 	
 	private String executeHttpClient(){
@@ -185,6 +205,7 @@ public class ArcHttpClient {
 			// HttpEntity 생성, HttpPost setEntity
 			// Multipart Form data 일 때
 			if(curContentType.equals(CONTENTTYPE_FORM)){
+				// ValuePair key, value 세팅
 				Set<String> keySet = mapValue.keySet();
 				Iterator<String> iterator = keySet.iterator();
 				while(iterator.hasNext()){
@@ -192,6 +213,18 @@ public class ArcHttpClient {
 					String value = mapValue.get(key);
 					mBuilder.addTextBody(key, value, ContentType.create("text/plain", "utf-8"));
 				}
+				
+				// FilePair key,value String 세팅
+				Set<String> fileKeySet = mapFile.keySet();
+				Iterator<String> fileIterator = fileKeySet.iterator();
+				while(fileIterator.hasNext()){
+					String key = fileIterator.next();
+					String value = mapFile.get(key);
+
+					FileBody bin = new FileBody(new File(value));
+					mBuilder.addPart(key, bin);
+				}
+				
 				HttpEntity reqEntity = mBuilder.build();
 				httpPost.setEntity(reqEntity);
 			}
@@ -230,12 +263,27 @@ public class ArcHttpClient {
 				return e.toString();
 			}
 		}
+		// GET 방식
 		else if(curMethod.equals(METHOD_GET)){
-			HttpGet httpPost = new HttpGet(curUrl);
+			// Parameter -> NameValuePair
+			List<NameValuePair> getParams = new ArrayList<NameValuePair>();
+			Set<String> keySet = mapValue.keySet();
+			Iterator<String> iterator = keySet.iterator();
+			while(iterator.hasNext()){
+				String key = iterator.next();
+				String value = mapValue.get(key);
+				getParams.add(new BasicNameValuePair(key, value));
+			}
+			
+			String paramString = URLEncodedUtils.format(getParams, "utf-8");
+			curUrl += "?";
+			curUrl += paramString;
+//			Log.d(TAG, "Get URL : " + curUrl);
+			HttpGet httpGet = new HttpGet(curUrl);
 
 			// 요청 및 결과값 리턴
 			try {
-				HttpResponse response = mHttpClient.execute(httpPost);
+				HttpResponse response = mHttpClient.execute(httpGet);
 				HttpEntity entity = response.getEntity();
 				is = entity.getContent();
 			} catch (ClientProtocolException e) {
@@ -279,6 +327,13 @@ public class ArcHttpClient {
 			super(context, title, showDialog);
 			this.listener = listener;
 		}
+		
+
+		public ExecuteTask(Context context, String progressTitle, String progressMessage, boolean showDialog, ArcHttpClientExecuteCompletedListener listener) {
+			super(context, progressTitle, progressMessage, showDialog);
+			this.listener = listener;
+		}
+
 
 		@Override
 		protected Integer doInBackground(Void... params) {

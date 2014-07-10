@@ -64,28 +64,98 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 	protected ProgressDialog mProgressDialog;
 	protected boolean showDialog = true;
 	protected Context mContext;
-	private String title;
+	private String title, message;
+	private boolean useCustomProgressDialog = false;
+	// 구버전 분리 boolean
+	private boolean isOldVersion = true;
 
+	/** 
+	 * 구버전 호환 생성자
+	 * 		title이 ProgressDialog의 message가 되고, ProgressDialog의 Title은 "잠시만 기다려주세요..."로 고정
+	 */
 	public BaseAsyncTask(Context context, String title){
 		mContext = context;
 		this.title = title;
+		this.isOldVersion = true;
 	}
-	
 	public BaseAsyncTask(Context context, String title, boolean showDialog){
 		mContext = context;
 		this.title = title;
 		this.showDialog = showDialog;
+		this.isOldVersion = true;
 	}
+
+	/**
+	 * ProgressDialog의 Title, Message를 모두 설정할 경우
+	 * @param context
+	 * @param progressTitle
+	 * @param progressMessage
+	 * @param showDialog
+	 */
+	public BaseAsyncTask(Context context, String progressTitle, String progressMessage, boolean showDialog){
+		init(context, progressTitle, progressMessage, showDialog, null, false);
+	}
+	/**
+	 * ProgressDialog의 Title, Message를 설정하며
+	 * CustomProgressDialog를 사용
+	 * @param context
+	 * @param progressTitle
+	 * @param progressMessage
+	 * @param showDialog
+	 * @param customProgressDialog
+	 * @param useCustomDialog
+	 */
+	public BaseAsyncTask(Context context, String progressTitle, String progressMessage, boolean showDialog, ProgressDialog customProgressDialog, boolean useCustomDialog){
+		init(context, progressTitle, progressMessage, showDialog, customProgressDialog, true);
+	}
+
+	private void init(Context context, String progressTitle, String progressMessage, boolean showDialog, ProgressDialog customProgressDialog, boolean useCustomProgressDialog){
+		mContext = context;
+		this.title = progressTitle;
+		this.message = progressMessage;
+		this.showDialog = showDialog;
+		this.mProgressDialog = customProgressDialog;
+		this.useCustomProgressDialog = useCustomProgressDialog;
+
+		// 구버전 구분용
+		this.isOldVersion = false;
+	}
+	
+	/**
+	 * 커스텀 ProgressDialog 설정 함수. execute전에 설정해야 함
+	 * 구버전에선 사용불가
+	 * @param customProgressDialog
+	 */
+	public void setCustomProgressDialog(ProgressDialog customProgressDialog){
+		this.mProgressDialog = customProgressDialog;
+		this.useCustomProgressDialog = true;
+	}
+
 
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
 		if(showDialog){
-			mProgressDialog = new ProgressDialog(mContext);
-			mProgressDialog.setTitle("잠시만 기다려주세요...");
-			mProgressDialog.setMessage(title);
-			mProgressDialog.setCanceledOnTouchOutside(false);
-			mProgressDialog.show();
+			if(isOldVersion){
+				mProgressDialog = new ProgressDialog(mContext);
+				mProgressDialog.setTitle("잠시만 기다려주세요...");
+				mProgressDialog.setMessage(title);
+				mProgressDialog.setCanceledOnTouchOutside(false);
+				mProgressDialog.show();
+			} else {
+				// 커스텀 ProgressDialog를 사용할 경우
+				if(useCustomProgressDialog && mProgressDialog != null){
+					mProgressDialog.show();
+				}
+				// 기본 ProgressDialog를 사용할 경우
+				else{
+					mProgressDialog = new ProgressDialog(mContext);
+					mProgressDialog.setTitle(title);
+					mProgressDialog.setMessage(message);
+					mProgressDialog.setCanceledOnTouchOutside(false);
+					mProgressDialog.show();
+				}
+			}
 		}
 	}
 
@@ -106,7 +176,7 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 			mProgressDialog.dismiss();
 		}
 	}
-	
+
 	@Override
 	protected void onCancelled() {
 		super.onCancelled();
@@ -115,8 +185,12 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 		}
 	}
 
-	
-	
+
+
+
+	/**
+	 * 구버전용 HTTP통신 함수
+	 */
 	public static String postRequest(String strUrl){
 		HashMap<String, String> valuePair = new HashMap<String, String>();
 		return postRequestHttpClient(strUrl, valuePair);
@@ -378,7 +452,7 @@ public class BaseAsyncTask extends AsyncTask<Void, String, Integer>{
 	private static DefaultHttpClient getHttpClient(){
 		return getNewHttpClient();
 	}
-	
+
 	private static String getQuery(List<NameValuePair> params) throws UnsupportedEncodingException
 	{
 		StringBuilder result = new StringBuilder();

@@ -9,6 +9,11 @@
     <color name="darkgray">#FF666666</color>
     <color name="gray">#FF999999</color>
     <color name="lightgray">#FFBBBBBB</color>
+    <color name="red">#FFFF0000</color>
+    <color name="green">#FF00FF00</color>
+    <color name="blue">#FF0000FF</color>
+    
+    
     
     <color name="theme">#1790A6</color>
     
