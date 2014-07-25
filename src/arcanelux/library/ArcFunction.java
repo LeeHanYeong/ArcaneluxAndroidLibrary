@@ -329,6 +329,47 @@ public class ArcFunction {
 		return optSize;
 	}
 
+	public static void cameraCaptureAndSaveCacheFileAndStartActivity(Context context, int requestCode, int optWidth, int optHeight, String fileName){
+		Intent intent = new Intent();
+		Camera camera = Camera.open();
+		Camera.Parameters parameters = camera.getParameters();
+		List<Size> sizeList = parameters.getSupportedPictureSizes();
+		//카메라 SupportedPictureSize목록 출력 로그
+		Log.d(TAG, "--SupportedPictureSizeList Start--");
+		for(int i=0; i<sizeList.size(); i++){
+			Size size = sizeList.get(i);
+			Log.d(TAG, "Width : " + size.width + ", Height : " + size.height);
+		}
+		Log.d(TAG, "--SupportedPictureSizeList End--");
+		// 원하는 최적화 사이즈를 1280x720 으로 설정
+		Camera.Size size = ArcFunction.getOptimalPictureSize(parameters.getSupportedPictureSizes(), optWidth, optHeight);
+		Log.d(TAG, "Selected Optimal Size : (" + size.width + ", " + size.height + ")");
+		parameters.setPreviewSize(size.width,  size.height);
+		parameters.setPictureSize(size.width,  size.height);
+		//		parameters.set("orientation", "landscape");
+		camera.setParameters(parameters);
+		camera.release();
+
+
+		// 임시파일 생성
+//		File file = null;
+//		try {
+//			file = File.createTempFile(fileName, null, context.getCacheDir());
+//			Log.d(TAG, "FilePath : " + file.getAbsolutePath());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		File file = new File(context.getCacheDir(), fileName);
+		File file = new File(context.getFilesDir(), fileName);
+		Uri outputFileUri = Uri.fromFile(file);
+		Log.d(TAG, "FilePath : " + file.getAbsolutePath());
+
+		// 카메라 작동시키는 Action으로 인텐트 설정, OutputFileURI 추가
+		intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra( MediaStore.EXTRA_OUTPUT, outputFileUri );
+		// requestCode지정해서 인텐트 실행
+		((Activity) context).startActivityForResult(intent, requestCode);
+	}
 	public static void cameraCaptureAndSaveFileAndStartActivity(Context context, int requestCode, int optWidth, int optHeight, String pathDir, String pathFile){
 		Intent intent = new Intent();
 		Camera camera = Camera.open();
@@ -352,7 +393,7 @@ public class ArcFunction {
 
 		// 폴더 생성
 		File file = new File(pathDir);
-		boolean isSuccess = false;
+		boolean isSuccess = true;
 		if(!file.exists()){
 			isSuccess = file.mkdirs();
 		}

@@ -13,8 +13,9 @@ public class BaseData {
 	protected final String JSON_STATUS = "json_status";
 	protected final int JSON_SUCCESS = 837293;
 	protected final int JSON_FAILED = 837294;
+	protected final int JSON_BLANK = 837295;
 	protected JSONObject mJsonObject;
-	
+
 	public BaseData(JSONObject jsonObject){
 		mJsonObject = jsonObject;
 		try {
@@ -29,25 +30,35 @@ public class BaseData {
 			}
 		}
 	}
-	
+
 	public BaseData(){
 		mJsonObject = new JSONObject();
 		try {
-			mJsonObject.put(JSON_STATUS, JSON_FAILED);
+			mJsonObject.put(JSON_STATUS, JSON_BLANK);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * 자신의 생성자에 전달된 mJsonObject를 리턴해준다
+	 * @return JSONObject mJsonObject
+	 */
 	public JSONObject getSelfJsonObject(){
 		return mJsonObject;
 	}
+	/**
+	 * 자신의 생성자에 전달된 mJsonObject의 String변환 값을 리턴해준다
+	 * @return String strJsonObject
+	 */
 	public String getSelfStrJsonObject(){
 		return mJsonObject.toString();
 	}
-	
-	
-	
+
+
+	/**
+	 * 생성자를 이용해서 생성한 Data에 정상적인 JSONObject가 전달되었는지를 리턴해준다
+	 */
 	public boolean isConvertJsonSuccess(){
 		if(getBoolean(JSON_STATUS)){
 			return true;
@@ -79,8 +90,8 @@ public class BaseData {
 			return false;
 		}
 	}
-	
-	
+
+
 	protected Calendar getCalendarFromString(String strDate, String strFormat){
 		SimpleDateFormat format = new SimpleDateFormat(strFormat);
 		Date date = null;
@@ -90,10 +101,10 @@ public class BaseData {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 		calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		
+
 		return calendar;
 	}
 
@@ -124,10 +135,10 @@ public class BaseData {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * mJsonObject에서 key로 JSONArray꺼내오기
-	 * 실패시 getBlankJsonObject()  실행
+	 * 실패시 getBlankJsonArray()  실행
 	 */
 	protected JSONArray getJsonArray(String key){
 		try {
@@ -137,8 +148,49 @@ public class BaseData {
 			return getBlankJsonArray();
 		}
 	}
-	
+
+	/**
+	 * 빈 JSONArray 리턴
+	 */
 	private JSONArray getBlankJsonArray(){
 		return new JSONArray();
+	}
+
+	/**
+	 * String, Integer, Double, Long값을 mJsonObject 에 삽입
+	 */
+	public boolean putObject(String key, Object obj){
+		try {
+			mJsonObject.put(JSON_STATUS, JSON_SUCCESS);
+			if(obj.getClass().equals(String.class)){
+				mJsonObject.put(key, (String) obj);
+				return true;
+			} 
+			else if(obj.getClass().equals(Integer.class)){
+				mJsonObject.put(key, (Integer) obj);
+				return true;
+			}
+			else if(obj.getClass().equals(Double.class)){
+				mJsonObject.put(key, (Double) obj);
+				return true;
+			}
+			else if(obj.getClass().equals(Long.class)){
+				mJsonObject.put(key, (Long) obj);
+				return true;
+			}
+			else {
+				mJsonObject.put(JSON_STATUS, JSON_FAILED);
+				return false;
+			}
+		} catch (JSONException e) {
+			try {
+				mJsonObject.put(JSON_STATUS, JSON_FAILED);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+				return false;
+			}
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

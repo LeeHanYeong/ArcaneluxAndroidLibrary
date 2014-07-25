@@ -173,10 +173,21 @@ public class ArcHttpClient {
 	public void execute(Context context, String title, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
 		executeBase(context, "잠시만 기다려주세요...", title, showDialog, listener);
 	}
+	public void execute(Context context, String title, String message, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
+		executeBase(context, title, message, showDialog, listener);
+	}
 	private void executeBase(Context context, String title, String message, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
 		ExecuteTask task = new ExecuteTask(context, title, message, showDialog, listener);
 		if(useCustomProgressDialog) task.setCustomProgressDialog(mCustomProgressDialog);
 		task.execute();
+	}
+	
+	/**
+	 * background에서 직접 적용할 수 있는 함수
+	 * @return request의 response문자열
+	 */
+	public String sendRequest(){
+		return executeHttpClient();
 	}
 	
 	private String executeHttpClient(){
@@ -327,20 +338,15 @@ public class ArcHttpClient {
 			super(context, title, showDialog);
 			this.listener = listener;
 		}
-		
-
 		public ExecuteTask(Context context, String progressTitle, String progressMessage, boolean showDialog, ArcHttpClientExecuteCompletedListener listener) {
 			super(context, progressTitle, progressMessage, showDialog);
 			this.listener = listener;
 		}
-
-
 		@Override
 		protected Integer doInBackground(Void... params) {
 			resultString = executeHttpClient();
 			return super.doInBackground(params);
 		}
-
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);

@@ -16,6 +16,7 @@ import android.widget.TextView;
 public class BaseArrayAdapter<T> extends ArrayAdapter<T>{
 	protected final String TAG = this.getClass().getName();
 	protected Context mContext;
+	protected LayoutInflater mLayoutInflater;
 	protected int layoutResource;
 	private String mFontFileName = "NanumBarunGothic.mp3";
 	private boolean hasCustomFontFile = false;
@@ -24,6 +25,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T>{
 	public BaseArrayAdapter(Context context, int resource, ArrayList<T> objects) {
 		super(context, resource, objects);
 		mContext = context;
+		mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutResource = resource;
 		hasCustomFontFile = false;
 	}
@@ -32,6 +34,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T>{
 		super(context, resource, objects);
 		mContext = context;
 		mFontFileName = fontFileName;
+		mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutResource = resource;
 		hasCustomFontFile = true;
 	}
@@ -43,6 +46,9 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T>{
 	}
 	
 	/** Inflate시 CustomFont를 적용한 View를 리턴해주는 함수 **/
+	protected View inflateWithCustomFont(int layoutRes){
+		return inflateWithCustomFont(mLayoutInflater, null, layoutRes);
+	}
 	protected View inflateWithCustomFont(LayoutInflater inflater, int layoutRes){
 		return inflateWithCustomFont(inflater, null, layoutRes);
 	}
