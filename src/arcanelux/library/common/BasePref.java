@@ -89,11 +89,29 @@ public class BasePref {
 	 * @param prefName
 	 * @param context
 	 */
-	public static void clearPref(String prefName, Context context){
+	private static void clearPref(String prefName, Context context){
 		SharedPreferences pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = pref.edit();
 		editor.clear();
 		editor.commit();
+	}
+	public static void clearPrefCache(Context context){
+		clearPref(CACHE, context);
+	}
+	public static void clearPrefJSONObject(Context context){
+		clearPref(JSONOBJECT, context);
+	}
+	public static void clearPrefSavedValue(Context context){
+		clearPref(SAVED_VALUE, context);
+	}
+	public static void clearPrefDataLogin(Context context){
+		clearPref(DATA_LOGIN, context);
+	}
+	public static void clearAllPref(Context context){
+		clearPrefCache(context);
+		clearPrefDataLogin(context);
+		clearPrefJSONObject(context);
+		clearPrefSavedValue(context);
 	}
 	
 	/** 로그인 관련 **/
@@ -169,18 +187,44 @@ public class BasePref {
 	}
 	
 	protected static String getString(Context context, String prefName, String key){
-		return (String) getObject(context, prefName, key);
+		Object obj = getObject(context, prefName, key);
+		if(obj != null){
+			return (String) obj;	
+		} else{
+			return "";
+		}
 	}
 	protected static Integer getInteger(Context context, String prefName, String key){
-		return (Integer) getObject(context, prefName, key);
+		Object obj = getObject(context, prefName, key);
+		if(obj != null){
+			return (Integer) obj;	
+		} else{
+			return 0;
+		}
 	}
 	protected static Boolean getBoolean(Context context, String prefName, String key){
-		return (Boolean) getObject(context, prefName, key);
+		Object obj = getObject(context, prefName, key);
+		if(obj != null){
+			return (Boolean) obj;	
+		} else{
+			return false;
+		}
+		 
 	}
 	protected static Float getFloat(Context context, String prefName, String key){
-		return (Float) getObject(context, prefName, key);
+		Object obj = getObject(context, prefName, key);
+		if(obj != null){
+			return (Float) obj;	
+		} else{
+			return 0.0f;
+		}
 	}
 	protected static Long getLong(Context context, String prefName, String key){
-		return (Long) getObject(context, prefName, key);
+		Object obj = getObject(context, prefName, key);
+		if(obj != null){
+			return (Long) obj;	
+		} else{
+			return (long) 0;
+		}
 	}
 }
