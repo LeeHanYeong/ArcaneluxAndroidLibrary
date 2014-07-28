@@ -13,7 +13,9 @@ import android.util.Log;
 public class BasePref {
 	private final static String TAG = "BasePref";
 	protected final static String SAVED_VALUE = "savedValue";
+	protected final static String JSONOBJECT = "jsonObject";
 	protected final static String DATA_LOGIN = "data";
+	protected final static String CACHE = "cache";
 
 	// Display Width, Height 저장
 	public static void setDisplaySize(Context context, int width, int height){
@@ -58,17 +60,17 @@ public class BasePref {
 	// JSONObject를 String 형태로 저장
 	public static void setJsonObject(Context context, String name, JSONObject jsonObject){
 		String strJsonObject = jsonObject.toString();
-		setObject(context, SAVED_VALUE, name, strJsonObject);
+		setObject(context, JSONOBJECT, name, strJsonObject);
 	}
 
 	// String으로 넘어온 JSONObject를 저장
 	public static void setJsonObjectString(Context context, String name, String str){
-		setObject(context, SAVED_VALUE, name, str);
+		setObject(context, JSONOBJECT, name, str);
 	}
 
 	// String 형태로 저장되어있는 JsonObject를 JsonObject객체로 생성하여 리턴
 	public static JSONObject getJsonObject(Context context, String name){
-		String strJSONObject = getString(context, SAVED_VALUE, name);
+		String strJSONObject = getString(context, JSONOBJECT, name);
 		try {
 			return new JSONObject(strJSONObject);
 		} catch (JSONException e) {
@@ -79,7 +81,19 @@ public class BasePref {
 
 	// String 형태로 저장되어있는 JsonObject를 String그대로 리턴
 	public static String getJsonObjectString(Context context, String name){
-		return getString(context, SAVED_VALUE, name);
+		return getString(context, JSONOBJECT, name);
+	}
+	
+	/**
+	 * Pref에 저장된 값 삭제
+	 * @param prefName
+	 * @param context
+	 */
+	public static void clearPref(String prefName, Context context){
+		SharedPreferences pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.clear();
+		editor.commit();
 	}
 	
 	/** 로그인 관련 **/
@@ -112,7 +126,7 @@ public class BasePref {
 		setObject(context, DATA_LOGIN, "autoLogin", value);
 	}
 	/** 자동로그인 여부 가져오기 **/
-	public static boolean getAutoLogin(Context context){
+	public static boolean isAutoLogin(Context context){
 		return getBoolean(context, DATA_LOGIN, "autoLogin");
 	}
 	

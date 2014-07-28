@@ -67,7 +67,7 @@ public class ArcHttpClient {
 	// MultipartEntityBuilder
 	private MultipartEntityBuilder mBuilder;
 	private String curCharset = "UTF-8";
-	
+
 	// Header, Value, File Map
 	private HashMap<String, String> mapHeader;
 	private HashMap<String, String> mapValue;
@@ -75,7 +75,7 @@ public class ArcHttpClient {
 
 	// Result
 	private boolean resultSuccess = true;
-	
+
 	// Custom ProgressDialog
 	private ProgressDialog mCustomProgressDialog;
 	private boolean useCustomProgressDialog;
@@ -98,7 +98,7 @@ public class ArcHttpClient {
 		} else if(method.equals("get")){
 			curMethod = METHOD_GET;
 		}
-		
+
 		if(contentType.equals(CONTENTTYPE_FORM)){
 			curContentType = CONTENTTYPE_FORM;
 		} else if(contentType.equals(CONTENTTYPE_X_WWW_FORM_URLENCODED)){
@@ -115,10 +115,10 @@ public class ArcHttpClient {
 			Charset chars = Charset.forName(curCharset);
 			mBuilder.setCharset(chars);			
 		} else if(contentType.equals(CONTENTTYPE_X_WWW_FORM_URLENCODED)){
-			
+
 		}
 	}
-	
+
 	// Custom ProgressDialog 설정
 	public void setCustomProgressDialog(ProgressDialog customProgressDialog){
 		mCustomProgressDialog = customProgressDialog;
@@ -168,7 +168,7 @@ public class ArcHttpClient {
 	public boolean isResultSuccess(){
 		return resultSuccess;
 	}
-	
+
 	// execute부분 설정 (BaseAsyncTask의 Old, New Version추가)
 	public void execute(Context context, String title, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
 		executeBase(context, "잠시만 기다려주세요...", title, showDialog, listener);
@@ -181,7 +181,7 @@ public class ArcHttpClient {
 		if(useCustomProgressDialog) task.setCustomProgressDialog(mCustomProgressDialog);
 		task.execute();
 	}
-	
+
 	/**
 	 * background에서 직접 적용할 수 있는 함수
 	 * @return request의 response문자열
@@ -189,7 +189,7 @@ public class ArcHttpClient {
 	public String sendRequest(){
 		return executeHttpClient();
 	}
-	
+
 	private String executeHttpClient(){
 		InputStream is = null;
 		String result = "";
@@ -217,32 +217,37 @@ public class ArcHttpClient {
 			// Multipart Form data 일 때
 			if(curContentType.equals(CONTENTTYPE_FORM)){
 				// ValuePair key, value 세팅
-				Set<String> keySet = mapValue.keySet();
-				Iterator<String> iterator = keySet.iterator();
-				while(iterator.hasNext()){
-					String key = iterator.next();
-					String value = mapValue.get(key);
-					mBuilder.addTextBody(key, value, ContentType.create("text/plain", "utf-8"));
+				if(mapValue != null){
+					Set<String> keySet = mapValue.keySet();
+					Iterator<String> iterator = keySet.iterator();
+					while(iterator.hasNext()){
+						String key = iterator.next();
+						String value = mapValue.get(key);
+						mBuilder.addTextBody(key, value, ContentType.create("text/plain", "utf-8"));
+					}
 				}
-				
-				// FilePair key,value String 세팅
-				Set<String> fileKeySet = mapFile.keySet();
-				Iterator<String> fileIterator = fileKeySet.iterator();
-				while(fileIterator.hasNext()){
-					String key = fileIterator.next();
-					String value = mapFile.get(key);
 
-					FileBody bin = new FileBody(new File(value));
-					mBuilder.addPart(key, bin);
+
+				// FilePair key,value String 세팅
+				if(mapFile != null){
+					Set<String> fileKeySet = mapFile.keySet();
+					Iterator<String> fileIterator = fileKeySet.iterator();
+					while(fileIterator.hasNext()){
+						String key = fileIterator.next();
+						String value = mapFile.get(key);
+
+						FileBody bin = new FileBody(new File(value));
+						mBuilder.addPart(key, bin);
+					}
 				}
-				
+
 				HttpEntity reqEntity = mBuilder.build();
 				httpPost.setEntity(reqEntity);
 			}
 			// x-www-form-urlencoded 일 때
 			else if(curContentType.equals(CONTENTTYPE_X_WWW_FORM_URLENCODED)){
 				List<NameValuePair> postParams = new ArrayList<NameValuePair>();
-				
+
 				Set<String> keySet = mapValue.keySet();
 				Iterator<String> iterator = keySet.iterator();
 				while(iterator.hasNext()){
@@ -257,7 +262,7 @@ public class ArcHttpClient {
 					return e.toString();
 				}
 			}
-			
+
 
 			// 요청 및 결과값 리턴
 			try {
@@ -285,11 +290,11 @@ public class ArcHttpClient {
 				String value = mapValue.get(key);
 				getParams.add(new BasicNameValuePair(key, value));
 			}
-			
+
 			String paramString = URLEncodedUtils.format(getParams, "utf-8");
 			curUrl += "?";
 			curUrl += paramString;
-//			Log.d(TAG, "Get URL : " + curUrl);
+			//			Log.d(TAG, "Get URL : " + curUrl);
 			HttpGet httpGet = new HttpGet(curUrl);
 
 			// 요청 및 결과값 리턴
@@ -326,14 +331,14 @@ public class ArcHttpClient {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * executeHttpClient함수 실행 시, 자동으로 ExecuteTask를 실행하며, 실행 시 받은 Context와 listener를 사용해서 AsyncTask작업 후 listener의 동작을 수행한다
 	 */
 	class ExecuteTask extends BaseAsyncTask {
 		private ArcHttpClientExecuteCompletedListener listener;
 		private String resultString;
-		
+
 		public ExecuteTask(Context context, String title, boolean showDialog, ArcHttpClientExecuteCompletedListener listener) {
 			super(context, title, showDialog);
 			this.listener = listener;
