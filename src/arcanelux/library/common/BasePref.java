@@ -27,7 +27,7 @@ public class BasePref {
 	public static int getDisplayWidth(Context context){
 		return getInteger(context, SAVED_VALUE, "width");
 	}
-	
+
 	// Display Height 불러오기
 	public static int getDisplayHeight(Context context){
 		return getInteger(context, SAVED_VALUE, "height");
@@ -57,33 +57,57 @@ public class BasePref {
 		return getString(context, SAVED_VALUE, "deviceId");
 	}
 
-	// JSONObject를 String 형태로 저장
+	/** JSONObject **/
+	/** JSONObject를 String 형태로 저장 */
 	public static void setJsonObject(Context context, String name, JSONObject jsonObject){
 		String strJsonObject = jsonObject.toString();
 		setObject(context, JSONOBJECT, name, strJsonObject);
 	}
-
-	// String으로 넘어온 JSONObject를 저장
+	/** JSONObject를 String 형태로 저장, SubName 추가 */
+	public static void setJsonObject(Context context, String name, String subName, JSONObject jsonObject){
+		String strJsonObject = jsonObject.toString();
+		setObject(context, JSONOBJECT, name+subName, strJsonObject);
+	}
+	/** String으로 넘어온 JSONObject를 저장 */
 	public static void setJsonObjectString(Context context, String name, String str){
 		setObject(context, JSONOBJECT, name, str);
 	}
+	/** JSONObject를 String 형태로 저장, SubName 추가 */
+	public static void setJsonObjectString(Context context, String name, String subName, String str){
+		setObject(context, JSONOBJECT, name+subName, str);
+	}
 
-	// String 형태로 저장되어있는 JsonObject를 JsonObject객체로 생성하여 리턴
+	/** String 형태로 저장되어있는 JsonObject를 JsonObject객체로 생성하여 리턴 */
 	public static JSONObject getJsonObject(Context context, String name){
 		String strJSONObject = getString(context, JSONOBJECT, name);
 		try {
 			return new JSONObject(strJSONObject);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return null;
+			return new JSONObject();
 		}
 	}
-
-	// String 형태로 저장되어있는 JsonObject를 String그대로 리턴
+	/** String 형태로 저장되어있는 JsonObject를 JsonObject객체로 생성하여 리턴, SubName 추가 */
+	public static JSONObject getJsonObject(Context context, String name, String subName){
+		String strJSONObject = getString(context, JSONOBJECT, name+subName);
+		try {
+			return new JSONObject(strJSONObject);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return new JSONObject();
+		}
+	}
+	/** String 형태로 저장되어있는 JsonObject를 String그대로 리턴 */
 	public static String getJsonObjectString(Context context, String name){
 		return getString(context, JSONOBJECT, name);
 	}
-	
+	/** String 형태로 저장되어있는 JsonObject를 String그대로 리턴, SubName추가 */
+	public static String getJsonObjectString(Context context, String name, String subName){
+		return getString(context, JSONOBJECT, name+subName);
+	}
+
+
+
 	/**
 	 * Pref에 저장된 값 삭제
 	 * @param prefName
@@ -113,7 +137,7 @@ public class BasePref {
 		clearPrefJSONObject(context);
 		clearPrefSavedValue(context);
 	}
-	
+
 	/** 로그인 관련 **/
 	/** ID 저장 **/
 	public static void setId(Context context, String id){
@@ -147,7 +171,7 @@ public class BasePref {
 	public static boolean isAutoLogin(Context context){
 		return getBoolean(context, DATA_LOGIN, "autoLogin");
 	}
-	
+
 	/**
 	 * Pref에 값 삽입, String, Integer, Boolean, Float, Long데이터 형 가능
 	 */
@@ -178,14 +202,14 @@ public class BasePref {
 			return false;
 		}
 	}
-	
+
 	private static Object getObject(Context context, String prefName, String key){
 		SharedPreferences pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
 		Map<String, ?> map = pref.getAll();
 		Object obj = map.get(key);
 		return obj;
 	}
-	
+
 	protected static String getString(Context context, String prefName, String key){
 		Object obj = getObject(context, prefName, key);
 		if(obj != null){
@@ -209,7 +233,7 @@ public class BasePref {
 		} else{
 			return false;
 		}
-		 
+
 	}
 	protected static Float getFloat(Context context, String prefName, String key){
 		Object obj = getObject(context, prefName, key);

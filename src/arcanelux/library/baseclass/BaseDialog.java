@@ -37,6 +37,11 @@ public class BaseDialog extends Dialog {
 		hasCustomFontFile = true;
 		mFontFileName = fontFileName;
 	}
+	public BaseDialog(Context context){
+		super(context);
+		init(context);
+		hasCustomFontFile = false;
+	}
 	private void init(Context context){
 		mContext = context;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

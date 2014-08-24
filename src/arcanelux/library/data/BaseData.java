@@ -90,6 +90,23 @@ public class BaseData {
 			return false;
 		}
 	}
+	protected double getDouble(String key){
+		try{
+			return mJsonObject.getDouble(key);
+		} catch (JSONException e){
+			e.printStackTrace();
+			return 0.0f;
+		}
+	}
+	protected long getLong(String key){
+		try {
+			return mJsonObject.getLong(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
 
 
 	protected Calendar getCalendarFromString(String strDate, String strFormat){

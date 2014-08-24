@@ -27,7 +27,7 @@ import com.flurry.android.FlurryAgent;
  * 		setGlobalFont함수
  */
 public class BaseActionBarActivity extends ActionBarActivity {
-	protected final String TAG = this.getClass().getSimpleName();
+	protected final String TAG = this.getClass().getName();
 	protected ActionBar mActionBar;
 	protected Context mContext;
 	protected boolean D = true;

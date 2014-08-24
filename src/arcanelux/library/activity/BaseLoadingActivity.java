@@ -35,6 +35,9 @@ public class BaseLoadingActivity extends BaseActionBarActivity {
 	@Override
 	public void setContentView(int layoutResID) {
 		super.setContentView(layoutResID);
+		// 액션바 감추기
+		mActionBar.hide();
+		
 		// 아래 여백값 계산
 		progressBarMarginBottom = (int)(displayHeight * progressBarMarginPercentValue/100);
 		LayoutParams llLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);

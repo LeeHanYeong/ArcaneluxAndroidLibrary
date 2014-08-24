@@ -50,6 +50,7 @@ import arcanelux.library.common.MySSLSocketFactory;
 public class ArcHttpClient {
 	private final String TAG = this.getClass().getSimpleName();
 	private boolean D = true;
+	private boolean D_exception = false;
 
 	// Static Value
 	public static final String METHOD_POST = "post";
@@ -202,6 +203,7 @@ public class ArcHttpClient {
 
 		// Post, Get방식에 따라 다르게 작동
 		if(curMethod.equals(METHOD_POST)){
+			Log.d(TAG, "ArcHttpClient URL : " + curUrl);
 			HttpPost httpPost = new HttpPost(curUrl);
 			// Header 설정
 			Set<String> headerKeySet = mapHeader.keySet();
@@ -224,6 +226,7 @@ public class ArcHttpClient {
 						String key = iterator.next();
 						String value = mapValue.get(key);
 						mBuilder.addTextBody(key, value, ContentType.create("text/plain", "utf-8"));
+						Log.d(TAG, "HttpPost Parameter ('" + key + ", " + value + ")'");
 					}
 				}
 
@@ -238,6 +241,7 @@ public class ArcHttpClient {
 
 						FileBody bin = new FileBody(new File(value));
 						mBuilder.addPart(key, bin);
+						Log.d(TAG, "HttpPost File ('" + key + ", " + value + ")'");
 					}
 				}
 
@@ -254,11 +258,12 @@ public class ArcHttpClient {
 					String key = iterator.next();
 					String value = mapValue.get(key);
 					postParams.add(new BasicNameValuePair(key, value));
+					Log.d(TAG, "HttpPost Parameter ('" + key + ", " + value + ")'");
 				}
 				try {
 					httpPost.setEntity(new UrlEncodedFormEntity(postParams));
 				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
+					if(D_exception) e.printStackTrace();
 					return e.toString();
 				}
 			}
@@ -270,11 +275,11 @@ public class ArcHttpClient {
 				HttpEntity entity = response.getEntity();
 				is = entity.getContent();
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				if(D_exception) e.printStackTrace();
 				resultSuccess = false;
 				return e.toString();
 			} catch (IOException e) {
-				e.printStackTrace();
+				if(D_exception) e.printStackTrace();
 				resultSuccess = false;
 				return e.toString();
 			}
@@ -296,6 +301,7 @@ public class ArcHttpClient {
 			curUrl += paramString;
 			//			Log.d(TAG, "Get URL : " + curUrl);
 			HttpGet httpGet = new HttpGet(curUrl);
+			Log.d(TAG, "HttpGet URL : " + curUrl);
 
 			// 요청 및 결과값 리턴
 			try {
@@ -303,11 +309,11 @@ public class ArcHttpClient {
 				HttpEntity entity = response.getEntity();
 				is = entity.getContent();
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
+				if(D_exception) e.printStackTrace();
 				resultSuccess = false;
 				return e.toString();
 			} catch (IOException e) {
-				e.printStackTrace();
+				if(D_exception) e.printStackTrace();
 				resultSuccess = false;
 				return e.toString();
 			}
