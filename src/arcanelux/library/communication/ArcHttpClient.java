@@ -40,6 +40,7 @@ import org.apache.http.params.HttpParams;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import arcanelux.library.baseclass.BaseAsyncTask;
 import arcanelux.library.common.MySSLSocketFactory;
@@ -49,7 +50,7 @@ import arcanelux.library.common.MySSLSocketFactory;
  */
 public class ArcHttpClient {
 	private final String TAG = this.getClass().getSimpleName();
-	private boolean D = true;
+	private boolean D = false;
 	private boolean D_exception = false;
 
 	// Static Value
@@ -108,6 +109,7 @@ public class ArcHttpClient {
 		curUrl = url;
 		mapHeader = new HashMap<String, String>();
 		mapValue = new HashMap<String, String>();
+		mapFile = new HashMap<String, String>();
 
 		// Content Type
 		if(contentType.equals(CONTENTTYPE_FORM)){
@@ -142,8 +144,7 @@ public class ArcHttpClient {
 		mapValue.put(key, value);
 	}
 	public void addFile(String key, String filePath){
-		FileBody bin = new FileBody(new File(filePath));
-		mBuilder.addPart(key, bin);
+		mapFile.put(key, filePath);
 	}
 	public void addValueSet(HashMap<String, String> valuePair){
 		Set<String> keySet = valuePair.keySet();
@@ -160,7 +161,7 @@ public class ArcHttpClient {
 		while(fileIterator.hasNext()){
 			String key = fileIterator.next();
 			String value = filePair.get(key);
-			addFile(key, value);
+			mapFile.put(key, value);
 		}
 	}
 	public void addHeader(String name, String value){
@@ -180,6 +181,12 @@ public class ArcHttpClient {
 	private void executeBase(Context context, String title, String message, boolean showDialog, ArcHttpClientExecuteCompletedListener listener){
 		ExecuteTask task = new ExecuteTask(context, title, message, showDialog, listener);
 		if(useCustomProgressDialog) task.setCustomProgressDialog(mCustomProgressDialog);
+		task.execute();
+	}
+	
+	// Context, ProgressDialog사용하지 않는 execute
+	public void execute(ArcHttpClientExecuteCompletedListener listener) {
+		NonProgressDialogExecuteTask task = new NonProgressDialogExecuteTask(listener);
 		task.execute();
 	}
 
@@ -357,6 +364,25 @@ public class ArcHttpClient {
 		protected Integer doInBackground(Void... params) {
 			resultString = executeHttpClient();
 			return super.doInBackground(params);
+		}
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			listener.onExecuteCompleted(resultString);
+		}
+	}
+	
+	class NonProgressDialogExecuteTask extends AsyncTask<Void, String, Integer> {
+		private ArcHttpClientExecuteCompletedListener listener;
+		private String resultString;
+		
+		public NonProgressDialogExecuteTask(ArcHttpClientExecuteCompletedListener listener) {
+			this.listener = listener;
+		}
+		@Override
+		protected Integer doInBackground(Void... params) {
+			resultString = executeHttpClient();
+			return null;
 		}
 		@Override
 		protected void onPostExecute(Integer result) {

@@ -39,12 +39,12 @@ public class BasePagerAdapter<T> extends PagerAdapter {
 	}
 	
 	@Override public void destroyItem(ViewGroup container, int position, Object object) {
-		super.destroyItem(container, position, object);
-//		((ViewPager) container).removeView((View) object);
+//		super.destroyItem(container, position, object);
+		((ViewPager) container).removeView((View) object);
 	}
 	@Override public void destroyItem(View container, int position, Object object) {
-		super.destroyItem(container, position, object);
-//		((ViewPager)pager).removeView((View)view);
+//		super.destroyItem((ViewGroup)container, position, object);
+		((ViewPager) container).removeView((View) object);
 	}
 	@Override public int getCount() { return mPagerItemList.size(); }
 	@Override public boolean isViewFromObject(View view, Object obj) { return view == obj; }

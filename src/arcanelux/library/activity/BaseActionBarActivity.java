@@ -30,10 +30,9 @@ public class BaseActionBarActivity extends ActionBarActivity {
 	protected final String TAG = this.getClass().getName();
 	protected ActionBar mActionBar;
 	protected Context mContext;
-	protected boolean D = true;
+	protected boolean D = false;
 	protected String packageName;
 	protected int displayWidth, displayHeight;
-	
 
 	/** 커스텀 폰트를 사용하려면, BaseActionBarActivity를 상속받은 클래스에서 onCreate의 super()함수를 호출하기 전에 setCustomFont함수 호출 */
 	protected LayoutInflater mInflater;

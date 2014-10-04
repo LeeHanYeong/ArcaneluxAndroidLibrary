@@ -202,12 +202,15 @@ public class ArcFunction {
 	}
 	/** 업데이트 Dialog **/
 	public static Dialog updateForceDialog(int id, final Context context) {
+		return updateForceDialog("마켓에 새로운 버전이 있습니다. 업데이트를 해주세요", id, context);
+	}
+	public static Dialog updateForceDialog(String title, int id, final Context context) {
 		Dialog dialog;
 		AlertDialog.Builder builder;
 		switch(id) {
 		case REQ_UPDATE:
 			builder = new AlertDialog.Builder(context);
-			builder.setMessage("마켓에 새로운 버전이 있습니다. 업데이트를 해주세요")      
+			builder.setMessage(title	)      
 			.setCancelable(false)      
 			.setPositiveButton("업데이트하기", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

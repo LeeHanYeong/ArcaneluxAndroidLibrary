@@ -21,20 +21,17 @@ public class BaseViewPager extends ViewPager {
 		this.isPagingEnabled = true;
 	}
 
+	
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if(isPagingEnabled){
-			return super.onTouchEvent(event);	
-		}
-		return false;
-	}
-	@Override
-	public boolean onInterceptTouchEvent(MotionEvent event) {
-		if(isPagingEnabled){
-			return super.onInterceptTouchEvent(event);	
-		}
-		return false;
-	}
+    public boolean onTouchEvent(MotionEvent event) {
+        return this.isPagingEnabled && super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        return this.isPagingEnabled && super.onInterceptTouchEvent(event);
+    }
+
 	
 	public void setPagingEnabled(boolean value) {
 		this.isPagingEnabled = value;

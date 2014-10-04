@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import arcanelux.library.ArcCalendar;
 import arcanelux.library.file.ArcFile;
@@ -26,10 +26,33 @@ public class ArcCamera {
 	public static void startCaptureActivity(Integer requestCode, Context context) {
 		startCaptureActivity(requestCode, "", "", context);
 	}
+	public static void startCaptureActivity(Integer requestCode, Fragment fragment) {
+		startCaptureActivity(requestCode, "", "", fragment);
+	}
 	public static void startCaptureActivity(Integer requestCode, String fileName, Context context) {
 		startCaptureActivity(requestCode, "", fileName, context);
 	}
+	public static void startCaptureActivity(Integer requestCode, String fileName, Fragment fragment) {
+		startCaptureActivity(requestCode, "", fileName, fragment);
+	}
+	public static void startCaptureActivity(Integer requestCode, String dirName, String fileName, Fragment fragment) {
+		String mFilePath = initStartCaptureActivity(requestCode, dirName, fileName);
+
+		Intent intent = new Intent(fragment.getActivity(), ArcCaptureActivity.class);
+		intent.putExtra("filePath", mFilePath);
+		fragment.startActivityForResult(intent, requestCode);
+	}
 	public static void startCaptureActivity(Integer requestCode, String dirName, String fileName, Context context) {
+		String mFilePath = initStartCaptureActivity(requestCode, dirName, fileName);
+
+		// 카메라 작동시키는 Action으로 인텐트 설정, OutputFileURI 추가
+		Activity callActivity = ((Activity) context);
+		Intent intent = new Intent(callActivity, ArcCaptureActivity.class);
+		intent.putExtra("filePath", mFilePath);
+		callActivity.startActivityForResult(intent, requestCode);
+	}
+	
+	private static String initStartCaptureActivity(Integer requestCode, String dirName, String fileName) {
 		String mDirPath;
 		String mDirName = "ArcCamera";
 
@@ -69,12 +92,8 @@ public class ArcCamera {
 		Uri outputFileUri = Uri.fromFile(file);
 		Log.d(TAG, "File uri : " + outputFileUri);
 		Log.d(TAG, "- Make file end -");
-
-		// 카메라 작동시키는 Action으로 인텐트 설정, OutputFileURI 추가
-		Activity callActivity = ((Activity) context);
-		Intent intent = new Intent(callActivity, ArcCaptureActivity.class);
-		intent.putExtra("filePath", mFilePath);
-		callActivity.startActivityForResult(intent, requestCode);
+		
+		return mFilePath;
 	}
 
 	public static String getFilePathFromCaptureResult(Intent data) {

@@ -9,24 +9,38 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import arcanelux.library.R;
 
-public class BaseWebViewActivity extends BaseActionBarActivity {
-	private WebView wv;
-	private String url;
-	private String method, postData;
-	
-	public void setWebView(WebView wv) {
-		this.wv = wv;
+public class ArcWebViewActivity extends BaseActionBarActivity {
+	protected WebView wv;
+	protected String method, postData;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.basewebview);
+
+		Intent intent = getIntent();
+		String url = intent.getStringExtra("url");
+		String title = intent.getStringExtra("title");
+		int iconRes = intent.getIntExtra("iconRes", 0);
+		method = intent.getStringExtra("method");
+		postData = intent.getStringExtra("postData");
+
+		mActionBar.setTitle(title);
+		mActionBar.setIcon(iconRes);
+
+		wv = (WebView) findViewById(R.id.wvBaseWebView);
 		wv.getSettings().setJavaScriptEnabled(true);
+		try{
+			if(method == null || method.equals("POST") || method.equals("post")){
+				wv.postUrl(url, EncodingUtils.getBytes(postData, "BASE64"));
+			} else{
+				wv.loadUrl(url);
+			}	
+		} catch(Exception e){
+			wv.loadUrl(url);
+		}
+
 		wv.setWebViewClient(new WebViewClientClass());
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	public void setMethod(String method) {
-		this.method = method;
-	}
-	public void setPostData(String postData) {
-		this.postData = postData;
 	}
 
 	@Override

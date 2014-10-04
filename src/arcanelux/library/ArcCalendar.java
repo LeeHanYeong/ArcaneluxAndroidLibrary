@@ -1,5 +1,6 @@
 package arcanelux.library;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -16,6 +17,19 @@ public class ArcCalendar {
 	public static String getDateStringFromCalendar(Calendar cal, String formatString) {
 		SimpleDateFormat format = new SimpleDateFormat(formatString);
 		return format.format(cal.getTime());
+	}
+	
+	public static Calendar getCalendarFromString(String date, String formatString) {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat(formatString);
+		try {
+			cal.setTime(format.parse(date));
+			return cal;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 	private Calendar mCalendar;
@@ -37,4 +51,6 @@ public class ArcCalendar {
 		SimpleDateFormat format = new SimpleDateFormat(formatString);
 		return format.format(mCalendar.getTime());
 	}
+	
+	
 }
